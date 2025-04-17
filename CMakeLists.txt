@@ -9,7 +9,12 @@ add_executable(shooter src/main.cpp
         src/Renderer.cpp
         src/Renderer.h
         src/Game.cpp
-        src/Game.h)
+        src/Game.h
+        src/ECS/EntityManager.cpp
+        src/ECS/EntityManager.h
+        src/ECS/ComponentArray.h
+        src/ECS/ComponentManager.cpp
+        src/ECS/ComponentManager.h)
 
 target_link_libraries(shooter PRIVATE raylib)
 
