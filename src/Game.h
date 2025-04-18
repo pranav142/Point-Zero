@@ -5,26 +5,42 @@
 #ifndef GAME_H
 #define GAME_H
 #include "Renderer.h"
-
+#include "ECS/Registry.h"
 
 namespace shooter {
+    struct Position {
+        Vector3 position;
+    };
+
     class Game {
     public:
         Game(int width, int height) : m_width(width), m_height(height) {
+            m_player = m_registry.create();
+
+            m_registry.add_component<Position>(m_player, {0, 0, 0});
         };
 
         void init();
 
         void run();
 
+        void handle_input();
+
+        void update();
+
         void render();
 
-        void handle_input();
+        void toggle_debug();
+
     private:
         int m_width = 0, m_height = 0;
+
         Renderer m_renderer = Renderer();
-        Camera m_camera = Camera();
-        Vector3 m_player_position = Vector3(0, 0, 0);
+        Camera m_debug_camera = Camera();
+        ECS::Registry m_registry = ECS::Registry();
+
+        ECS::Entity m_player;
+        bool debug = false;
     };
 }
 

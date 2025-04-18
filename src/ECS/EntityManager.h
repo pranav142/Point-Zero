@@ -25,9 +25,9 @@ namespace ECS {
             }
         }
 
-        Entity create_entity();
+        Entity create();
 
-        void delete_entity(Entity entity);
+        void destroy(Entity entity);
 
         void set_component_mask(Entity entity, ComponentMask mask);
 

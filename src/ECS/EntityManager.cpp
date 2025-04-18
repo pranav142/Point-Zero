@@ -6,7 +6,7 @@
 
 #include <cassert>
 
-ECS::Entity ECS::EntityManager::create_entity() {
+ECS::Entity ECS::EntityManager::create() {
     assert(m_entity_count <= MAX_ENTITIES);
 
     Entity entity = m_unused_entities.front();
@@ -15,7 +15,7 @@ ECS::Entity ECS::EntityManager::create_entity() {
     return entity;
 }
 
-void ECS::EntityManager::delete_entity(Entity entity) {
+void ECS::EntityManager::destroy(Entity entity) {
     assert(entity < MAX_ENTITIES);
 
     m_unused_entities.push(entity);

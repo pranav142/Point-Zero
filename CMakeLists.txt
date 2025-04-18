@@ -13,8 +13,9 @@ add_executable(shooter src/main.cpp
         src/ECS/EntityManager.cpp
         src/ECS/EntityManager.h
         src/ECS/ComponentArray.h
-        src/ECS/ComponentManager.cpp
-        src/ECS/ComponentManager.h)
+        src/ECS/ComponentManager.h
+        src/ECS/Registry.cpp
+        src/ECS/Registry.h)
 
 target_link_libraries(shooter PRIVATE raylib)
 

@@ -16,6 +16,7 @@ namespace ECS {
     class IComponentArray {
     public:
         virtual ~IComponentArray() = default;
+        virtual void destroy(Entity entity) = 0;
     };
 
     template<typename T>
@@ -23,8 +24,8 @@ namespace ECS {
     public:
         ComponentArray() = default;
 
-        void add_component(Entity entity, T component) {
-            assert(m_entity_to_index.find(entity) == m_entity_to_index.end());
+        void add(Entity entity, T component) {
+            assert(!m_entity_to_index.contains(entity));
 
             size_t next_index = m_component_count;
             m_components[next_index] = component;
@@ -33,8 +34,8 @@ namespace ECS {
             m_component_count++;
         }
 
-        void remove_component(Entity entity) {
-            assert(m_entity_to_index.find(entity) != m_entity_to_index.end());
+        void remove(Entity entity) {
+            assert(m_entity_to_index.contains(entity));
 
             // Move the deleted entity to end and erase it
             size_t deleted_index = m_entity_to_index[entity];
@@ -51,12 +52,17 @@ namespace ECS {
             m_component_count--;
         }
 
-        T &get_component(Entity entity) {
-            assert(m_entity_to_index.find(entity) != m_entity_to_index.end());
+        T &get(Entity entity) {
+            assert(m_entity_to_index.contains(entity));
 
             return m_components[m_entity_to_index[entity]];
         }
 
+        void destroy(Entity entity) override {
+            if (m_entity_to_index.contains(entity)) {
+                remove(entity);
+            }
+        }
     private:
         std::array<T, MAX_ENTITIES> m_components;
         std::unordered_map<Entity, size_t> m_entity_to_index;
