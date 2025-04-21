@@ -15,7 +15,9 @@ add_executable(shooter src/main.cpp
         src/ECS/ComponentArray.h
         src/ECS/ComponentManager.h
         src/ECS/Registry.cpp
-        src/ECS/Registry.h)
+        src/ECS/Registry.h
+        src/FPSCam.cpp
+        src/FPSCam.h)
 
 target_link_libraries(shooter PRIVATE raylib)
 
