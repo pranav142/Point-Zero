@@ -11,21 +11,6 @@
 #include "ECS/Registry.h"
 
 namespace shooter {
-    struct Rotation {
-        float pitch = 0.0f;
-        float yaw = 0.0f;
-        float roll = 0.0f;
-    };
-    struct Transform {
-        Vector3 position = { 0.0f, 0.0f, 0.0f };
-        Rotation rotation = { 0.0f, 0.0f, 0.0f };
-    };
-
-    struct DebugController {
-        float speed = 0.0f;
-        float sensitivity = 0.0f;
-    };
-
     class Game {
     public:
         Game(int width, int height) : m_width(width), m_height(height) {
