@@ -16,13 +16,14 @@ add_executable(shooter src/main.cpp
         src/ECS/ComponentManager.h
         src/ECS/Registry.cpp
         src/ECS/Registry.h
-        src/Components/Position.h
         src/Components/DebugController.h
         src/Utils/Input.h
         src/Utils/Movement.h
         src/Utils/Directions.h
+        src/Core/Camera.cpp
+        src/Core/Camera.h
 )
 
 target_link_libraries(shooter PRIVATE raylib)
 
-target_include_directories(shooter PRIVATE libs/raylib)
+target_include_directories(shooter PRIVATE libs/raylib src)

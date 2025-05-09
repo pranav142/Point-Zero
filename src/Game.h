@@ -5,17 +5,22 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "Core/Camera.h"
 #include "raylib.h"
-#include "raymath.h"
 #include "Renderer.h"
 #include "ECS/Registry.h"
 
 namespace shooter {
+    enum class GameMode {
+        PLAY,
+        DEBUG,
+    };
+
     class Game {
     public:
         Game(int width, int height) : m_width(width), m_height(height) {
             m_player = m_registry.create();
-            m_debug = m_registry.create();
+            // m_debug = m_registry.create();
         };
 
         void init();
@@ -34,11 +39,10 @@ namespace shooter {
         int m_width = 0, m_height = 0;
 
         Renderer m_renderer = Renderer();
-        Camera m_debug_camera = Camera();
+        core::Camera m_debug_camera = core::Camera();
         ECS::Registry m_registry = ECS::Registry();
 
         ECS::Entity m_player;
-        ECS::Entity m_debug;
 
         bool debug = false;
         float m_delta_time = 0.0f;

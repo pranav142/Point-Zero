@@ -1,7 +1,3 @@
-//
-// Created by pknadimp on 4/14/25.
-//
-
 #include "Game.h"
 
 #include <iostream>
@@ -26,9 +22,9 @@ void shooter::Game::init() {
         .scale = {1.0f, 1.0f, 1.0f},
     };
     m_registry.add_component<Transform>(m_player, default_transform);
-    m_registry.add_component<Transform>(m_debug, default_transform);
+    // m_registry.add_component<Transform>(m_debug, default_transform);
 
-    m_registry.add_component<components::DebugController>(m_debug, components::DebugController{5.0f, 0.2f});
+    // m_registry.add_component<components::DebugController>(m_debug, components::DebugController{5.0f, 0.2f});
 }
 
 void shooter::Game::run() {
@@ -46,7 +42,7 @@ void shooter::Game::run() {
 }
 
 void shooter::Game::render() {
-    Camera camera = m_debug_camera;
+    Camera camera = m_debug_camera.get_raylib_cam();
     m_renderer.begin_frame();
     m_renderer.render_player(m_registry.get_component<Transform>(m_player).translation, camera);
     m_renderer.end_frame();
@@ -57,10 +53,6 @@ void shooter::Game::toggle_debug() {
 }
 
 void shooter::Game::handle_input() {
-    if (IsKeyPressed('Z')) {
-        m_debug_camera.target = (Vector3){0.0f, 0.0f, 0.0f};
-    }
-
     constexpr float speed = 5.0f;
     // add these to move functions
     auto &position = m_registry.get_component<Transform>(m_player);
@@ -84,35 +76,22 @@ void shooter::Game::handle_input() {
 
 void shooter::Game::update() {
     if (debug) {
-        auto &transform = m_registry.get_component<Transform>(m_debug);
-        const auto &[speed, sensitivity] = m_registry.get_component<components::DebugController>(m_debug);
-
         const auto [dx, dy] = GetMouseDelta();
 
-        const float d_pitch = utils::pitch_delta_rad(-dy, sensitivity);
-        const float d_yaw = utils::yaw_delta_rad(-dx, sensitivity);
+        m_debug_camera.rotate_pitch(-dy);
+        m_debug_camera.rotate_yaw(dx);
 
-        utils::rotate_yaw(transform, d_yaw);
-        utils::rotate_pitch(transform, d_pitch);
-
-        const float displacement = speed * m_delta_time;
         if (IsKeyDown(KEY_W))
-            utils::move_forward(transform, displacement);
+            m_debug_camera.move_forward(m_delta_time);
         if (IsKeyDown(KEY_A))
-            utils::move_right(transform, -displacement);
+            m_debug_camera.move_left(m_delta_time);
         if (IsKeyDown(KEY_S))
-            utils::move_forward(transform, -displacement);
+            m_debug_camera.move_backward(m_delta_time);
         if (IsKeyDown(KEY_D))
-            utils::move_right(transform, displacement);
+            m_debug_camera.move_right(m_delta_time);
         if (IsKeyDown(KEY_SPACE))
-            utils::move_up(transform, displacement);
+            m_debug_camera.move_up(m_delta_time);
         if (IsKeyDown(KEY_LEFT_SHIFT))
-            utils::move_up(transform, -displacement);
-
-        m_debug_camera.position = transform.translation;
-        m_debug_camera.target = Vector3Add(transform.translation, utils::get_forward_vector(transform));
-        m_debug_camera.up = utils::get_up_vector(transform);
-        m_debug_camera.fovy = 45.0f;
-        m_debug_camera.projection = CAMERA_PERSPECTIVE;
+            m_debug_camera.move_forward(m_delta_time);
     }
 }
