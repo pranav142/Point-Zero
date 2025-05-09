@@ -45,7 +45,6 @@ namespace utils {
 
         transform.rotation = QuaternionMultiply(q_pitch, transform.rotation);
         transform.rotation = QuaternionNormalize(transform.rotation);
-        transform.rotation = QuaternionNormalize(transform.rotation);
     }
 
     inline void move_forward(Transform &transform, const float displacement) {
