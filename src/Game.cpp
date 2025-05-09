@@ -1,13 +1,7 @@
 #include "Game.h"
 
-#include <iostream>
 #include "Utils/Input.h"
-#include "Utils/Movement.h"
-
-#include "Components/DebugController.h"
-
-#include "raymath.h"
-
+#include "Map.h"
 
 void shooter::Game::init() {
     InitWindow(m_width, m_height, "SHOOTER");
@@ -15,13 +9,6 @@ void shooter::Game::init() {
     DisableCursor();
 
     SetTargetFPS(144);
-
-    Transform default_transform{
-        .translation = {0.0f, 0.0f, 0.0f},
-        .rotation = Quaternion(0.0f, 0.0f, 0.0f, 1.0f),
-        .scale = {1.0f, 1.0f, 1.0f},
-    };
-    // m_registry.add_component<Transform>(m_player, default_transform);
 }
 
 void shooter::Game::run() {
@@ -35,11 +22,20 @@ void shooter::Game::run() {
     CloseWindow();
 }
 
-void shooter::Game::render() {
+void shooter::Game::render() const {
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+
     Camera camera = m_debug_camera.get_raylib_cam();
-    m_renderer.begin_frame();
-    m_renderer.render_player(m_player.transform.translation, camera);
-    m_renderer.end_frame();
+
+    BeginMode3D(camera);
+
+    draw_player(m_player);
+    draw_map(m_map);
+
+    EndMode3D();
+
+    EndDrawing();
 }
 
 void shooter::Game::toggle_debug() {
@@ -73,7 +69,7 @@ void shooter::Game::update_debug_camera() {
     if (IsKeyDown(KEY_SPACE))
         m_debug_camera.move_up(m_delta_time);
     if (IsKeyDown(KEY_LEFT_SHIFT))
-        m_debug_camera.move_forward(m_delta_time);
+        m_debug_camera.move_down(m_delta_time);
 }
 
 

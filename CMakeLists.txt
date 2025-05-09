@@ -6,8 +6,6 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(libs/raylib)
 
 add_executable(shooter src/main.cpp
-        src/Renderer.cpp
-        src/Renderer.h
         src/Game.cpp
         src/Game.h
         src/ECS/EntityManager.cpp
@@ -24,6 +22,8 @@ add_executable(shooter src/main.cpp
         src/Core/Camera.h
         src/Player.cpp
         src/Player.h
+        src/Map.cpp
+        src/Map.h
 )
 
 target_link_libraries(shooter PRIVATE raylib)

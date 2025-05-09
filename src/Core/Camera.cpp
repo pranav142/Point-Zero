@@ -49,7 +49,6 @@ namespace core {
         utils::move_up(m_transform, -displacement);
     }
 
-
     void Camera::set_position(const Vector3 &position) {
         m_transform.translation = position;
     }

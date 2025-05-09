@@ -9,21 +9,25 @@
 #include "raymath.h"
 
 namespace shooter {
+    constexpr float CUBE_SIZE = 2.0f;
+
     struct Player {
-        Transform transform = Transform(Vector3(0.0f, 0.0f, 0.0f), QuaternionIdentity(), Vector3(1.0f, 1.0f, 1.0f));
+        Transform transform = Transform(Vector3(0.0f, CUBE_SIZE / 2.0f, 0.0f), QuaternionIdentity(), Vector3(1.0f, 1.0f, 1.0f));
         float speed = 5.0f;
         float sensitivity = 0.2f;
     };
 
-    void move_player_forward(Player& player, float delta_time);
+    void move_player_forward(Player &player, float delta_time);
 
-    void move_player_backward(Player& player, float delta_time);
+    void move_player_backward(Player &player, float delta_time);
 
-    void move_player_left(Player& player, float delta_time);
+    void move_player_left(Player &player, float delta_time);
 
-    void move_player_right(Player& player, float delta_time);
+    void move_player_right(Player &player, float delta_time);
 
-    void update_player(Player& player, float delta_time);
+    void update_player(Player &player, float delta_time);
+
+    void draw_player(const Player &player);
 }
 
 

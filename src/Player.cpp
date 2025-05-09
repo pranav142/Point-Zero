@@ -47,4 +47,9 @@ namespace shooter {
         if (IsKeyDown(KEY_D))
             move_player_right(player, delta_time);
     }
+
+    void draw_player(const Player &player) {
+        DrawCube(player.transform.translation, CUBE_SIZE, CUBE_SIZE, CUBE_SIZE, RED);
+        DrawCubeWires(player.transform.translation, CUBE_SIZE, CUBE_SIZE, CUBE_SIZE, MAROON);
+    }
 }

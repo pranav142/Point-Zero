@@ -6,8 +6,8 @@
 #define GAME_H
 
 #include "Core/Camera.h"
-#include "Renderer.h"
 #include "Player.h"
+#include "Map.h"
 
 namespace shooter {
     enum class GameMode {
@@ -18,8 +18,6 @@ namespace shooter {
     class Game {
     public:
         Game(int width, int height) : m_width(width), m_height(height) {
-            // m_player = m_registry.create();
-            // m_debug = m_registry.create();
         };
 
         void init();
@@ -32,20 +30,21 @@ namespace shooter {
 
         void update();
 
-        void render();
+        void render() const;
 
         void toggle_debug();
 
     private:
         int m_width = 0, m_height = 0;
 
-        Renderer m_renderer = Renderer();
         core::Camera m_debug_camera = core::Camera();
-        // ECS::Registry m_registry = ECS::Registry();
-        shooter::Player m_player;
-        // ECS::Entity m_player;
+
+        Player m_player;
 
         GameMode m_mode = GameMode::PLAY;
+
+        Map& m_map = default_map;
+
         float m_delta_time = 0.0f;
     };
 }
