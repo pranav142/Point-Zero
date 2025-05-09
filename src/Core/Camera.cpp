@@ -8,6 +8,7 @@
 #include "Utils/Input.h"
 
 namespace core {
+    // @Refactor Separate Camera Controller behavior from the Camera Data
     void Camera::rotate_yaw(float dx) {
         const float d_yaw = utils::yaw_delta_rad(-dx, m_sensitivity);
         utils::rotate_yaw(m_transform, d_yaw);

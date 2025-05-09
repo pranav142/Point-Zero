@@ -22,6 +22,8 @@ add_executable(shooter src/main.cpp
         src/Utils/Directions.h
         src/Core/Camera.cpp
         src/Core/Camera.h
+        src/Player.cpp
+        src/Player.h
 )
 
 target_link_libraries(shooter PRIVATE raylib)
