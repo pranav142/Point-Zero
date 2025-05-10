@@ -4,18 +4,20 @@
 
 #include "Player.h"
 
+#include <iostream>
+
 #include "Utils/Input.h"
 #include "Utils/Movement.h"
 
 namespace shooter {
     void move_player_forward(Player &player, float delta_time) {
         float displacement = delta_time * player.speed;
-        utils::move_forward(player.transform, displacement);
+        utils::move_forward_fps(player.transform, displacement);
     }
 
     void move_player_backward(Player &player, float delta_time) {
         float displacement = delta_time * player.speed;
-        utils::move_forward(player.transform, -displacement);
+        utils::move_forward_fps(player.transform, -displacement);
     }
 
     void move_player_left(Player &player, float delta_time) {
@@ -33,10 +35,16 @@ namespace shooter {
         utils::rotate_yaw(player.transform, d_yaw);
     }
 
+    void pitch_player(Player &player, float dy) {
+        const float d_pitch = utils::pitch_delta_rad(dy, player.sensitivity);
+        utils::rotate_pitch(player.transform, d_pitch);
+    }
+
     void update_player(Player &player, float delta_time) {
         const auto [dx, dy] = GetMouseDelta();
 
         yaw_player(player, dx);
+        pitch_player(player, -dy);
 
         if (IsKeyDown(KEY_W))
             move_player_forward(player, delta_time);
@@ -48,8 +56,21 @@ namespace shooter {
             move_player_right(player, delta_time);
     }
 
+
     void draw_player(const Player &player) {
-        DrawCube(player.transform.translation, CUBE_SIZE, CUBE_SIZE, CUBE_SIZE, RED);
-        DrawCubeWires(player.transform.translation, CUBE_SIZE, CUBE_SIZE, CUBE_SIZE, MAROON);
+        Vector3 start_position = Vector3Add(player.transform.translation, Vector3(0.0f, PLAYER_RADIUS - 0.01f, 0.0f));
+        Vector3 end_position = Vector3Add(start_position, Vector3(0.0f, BODY_HEIGHT, 0.0f));
+        DrawCapsule(start_position, end_position, PLAYER_RADIUS, 50, 50, LIGHTGRAY);
+    }
+
+    Camera3D get_player_raylib_cam(const Player &player) {
+        Vector3 translation = player.transform.translation + player.camera_offset;
+        Camera3D camera;
+        camera.position = translation;
+        camera.target = Vector3Add(translation, utils::get_forward_vector(player.transform));
+        camera.up = utils::get_up_vector(player.transform);
+        camera.fovy = 45.0f;
+        camera.projection = CAMERA_PERSPECTIVE;
+        return camera;
     }
 }

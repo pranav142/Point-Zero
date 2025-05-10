@@ -60,6 +60,13 @@ namespace utils {
     inline void move_up(Transform &transform, const float displacement) {
         transform.translation = Vector3Add(transform.translation, UP * displacement);
     }
+
+    inline void move_forward_fps(Transform &transform, const float displacement) {
+        Vector3 forward = get_forward_vector(transform);
+        forward.y = 0;
+        forward = Vector3Normalize(forward);
+        transform.translation = Vector3Add(transform.translation, forward * displacement);
+    }
 }
 
 #endif

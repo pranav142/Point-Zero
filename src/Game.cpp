@@ -6,6 +6,7 @@
 void shooter::Game::init() {
     InitWindow(m_width, m_height, "SHOOTER");
 
+    m_debug_camera.set_position(Vector3(5.0f, 5.0f, 0.0f));
     DisableCursor();
 
     SetTargetFPS(144);
@@ -22,11 +23,14 @@ void shooter::Game::run() {
     CloseWindow();
 }
 
-void shooter::Game::render() const {
+void shooter::Game::render() {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    Camera camera = m_debug_camera.get_raylib_cam();
+    Camera camera = get_player_raylib_cam(m_player);
+    if (m_mode == GameMode::DEBUG) {
+        camera = m_debug_camera.get_raylib_cam();
+    }
 
     BeginMode3D(camera);
 
