@@ -1,5 +1,9 @@
 #include "Game.h"
 
+#include <iostream>
+#include <ostream>
+#include <signal.h>
+
 #include "HUD.h"
 #include "Utils/Input.h"
 #include "Map.h"
@@ -8,6 +12,8 @@ void shooter::Game::init() {
     InitWindow(m_width, m_height, "SHOOTER");
 
     m_debug_camera.set_position(Vector3(5.0f, 5.0f, 0.0f));
+    m_enemy_player.set_player_position(Vector3(5.0f, 0.0f, 5.0f));
+
     DisableCursor();
 
     SetTargetFPS(144);
@@ -24,6 +30,10 @@ void shooter::Game::run() {
     CloseWindow();
 }
 
+void shooter::Game::spawn_enemy() {
+    revive_player(m_enemy_player);
+}
+
 void shooter::Game::render() {
     BeginDrawing();
     ClearBackground(RAYWHITE);
@@ -36,6 +46,12 @@ void shooter::Game::render() {
     BeginMode3D(camera);
 
     draw_player(m_player);
+
+    if (m_enemy_player.state == PlayerState::ALIVE) {
+        draw_player(m_enemy_player);
+        draw_collision_sphere(m_enemy_player);
+    }
+
     draw_map(m_map);
 
     EndMode3D();
@@ -54,8 +70,12 @@ void shooter::Game::toggle_debug() {
 }
 
 void shooter::Game::handle_input() {
-    if (IsKeyPressed('T')) {
+    if (IsKeyPressed(KEY_T)) {
         toggle_debug();
+    }
+
+    if (IsKeyPressed(KEY_R)) {
+        spawn_enemy();
     }
 }
 
@@ -87,5 +107,13 @@ void shooter::Game::update() {
 
     if (m_mode == GameMode::PLAY) {
         update_player(m_player, m_delta_time);
+
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && m_enemy_player.state == PlayerState::ALIVE) {
+            Ray ray = player_shoot(m_player);
+            RayCollision collision = GetRayCollisionSphere(ray, m_enemy_player.transform.translation, 3.0f);
+            if (collision.hit) {
+                kill_player(m_enemy_player);
+            }
+        }
     }
 }

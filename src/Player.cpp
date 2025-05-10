@@ -10,6 +10,10 @@
 #include "Utils/Movement.h"
 
 namespace shooter {
+    void Player::set_player_position(Vector3 position) {
+        transform.translation = position;
+    }
+
     void move_player_forward(Player &player, float delta_time) {
         float displacement = delta_time * player.speed;
         utils::move_forward_fps(player.transform, displacement);
@@ -72,5 +76,24 @@ namespace shooter {
         camera.fovy = 45.0f;
         camera.projection = CAMERA_PERSPECTIVE;
         return camera;
+    }
+
+    Ray player_shoot(const Player &player) {
+        Ray ray;
+        ray.position = player.transform.translation;
+        ray.direction = utils::get_forward_vector(player.transform);
+        return ray;
+    }
+
+    void draw_collision_sphere(const Player &player) {
+        DrawSphereWires(player.transform.translation, 3.0f, 5, 5, YELLOW);
+    }
+
+    void kill_player(Player &player) {
+        player.state = PlayerState::DEAD;
+    }
+
+    void revive_player(Player &player) {
+        player.state = PlayerState::ALIVE;
     }
 }

@@ -6,6 +6,8 @@
 #define HUD_H
 
 namespace shooter {
+    void draw_crosshair(int screen_width, int screen_height);
+
     void draw_HUD(int screen_width, int screen_height);
 } // shooter
 

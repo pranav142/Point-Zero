@@ -24,6 +24,8 @@ namespace shooter {
 
         void run();
 
+        void spawn_enemy();
+
         void handle_input();
 
         void update_debug_camera();
@@ -40,6 +42,7 @@ namespace shooter {
         core::Camera m_debug_camera = core::Camera();
 
         Player m_player;
+        Player m_enemy_player;
 
         GameMode m_mode = GameMode::PLAY;
 

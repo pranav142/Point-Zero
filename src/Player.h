@@ -18,6 +18,10 @@ namespace shooter {
     constexpr float BODY_HEIGHT = 1.0f;
     constexpr float PLAYER_HEIGHT = BODY_HEIGHT + PLAYER_RADIUS * 2;
 
+    enum class PlayerState {
+        DEAD,
+        ALIVE
+    };
     struct Player {
         Transform transform = Transform(Vector3(0.0f, 0.0f, 0.0f),
                                         // @WTF! Why do we have to set the ROLL instead of pitch?
@@ -27,6 +31,10 @@ namespace shooter {
         float sensitivity = 0.2f;
 
         Vector3 camera_offset = Vector3(0.0f, PLAYER_HEIGHT + 0.05f, 0.0f);
+
+        PlayerState state = PlayerState::ALIVE;
+
+        void set_player_position(Vector3 position);
     };
 
     void move_player_forward(Player &player, float delta_time);
@@ -46,6 +54,15 @@ namespace shooter {
     void draw_player(const Player &player);
 
     Camera3D get_player_raylib_cam(const Player &player);
+
+    Ray player_shoot(const Player &player);
+
+    // @TODO: Remove This when we have more robust collision models
+    void draw_collision_sphere(const Player& player);
+
+    void kill_player(Player &player);
+
+    void revive_player(Player &player);
 }
 
 
