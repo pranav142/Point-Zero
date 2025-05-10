@@ -22,6 +22,8 @@ void shooter::Game::init() {
 void shooter::Game::run() {
     while (!WindowShouldClose()) {
         m_delta_time = GetFrameTime();
+        std::cout << 1 / m_delta_time << std::endl;
+
         handle_input();
         update();
         render();

@@ -72,7 +72,7 @@ namespace shooter {
     }
 
     Camera3D get_player_raylib_cam(const Player &player) {
-        Vector3 translation = player.transform.translation + player.camera_offset;
+        Vector3 translation = player.camera_position();
         Camera3D camera;
         camera.position = translation;
         camera.target = Vector3Add(translation, utils::get_forward_vector(player.transform));

@@ -4,7 +4,7 @@
 #include "ECS/Registry.h"
 
 int main() {
-    shooter::Game game(800, 450);
+    shooter::Game game(1280, 720);
     game.init();
     game.run();
 }

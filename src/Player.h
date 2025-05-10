@@ -25,7 +25,8 @@ namespace shooter {
     struct Player {
         Transform transform = Transform(Vector3(0.0f, 0.0f, 0.0f),
                                         // @WTF! Why do we have to set the ROLL instead of pitch?
-                                        QuaternionFromEuler(0.0f, 0.0f, 1.0f),
+                                        // QuaternionIdentity(),
+                                        QuaternionFromEuler(0.0f, 0.0f, 0.0f),
                                         Vector3(1.0f, 1.0f, 1.0f));
         float speed = 5.0f;
         float sensitivity = 0.2f;
@@ -36,7 +37,7 @@ namespace shooter {
 
         void set_player_position(Vector3 position);
 
-        Vector3 camera_position() const;
+        [[nodiscard]] Vector3 camera_position() const;
     };
 
     void move_player_forward(Player &player, float delta_time);
