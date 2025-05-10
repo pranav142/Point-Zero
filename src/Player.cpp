@@ -14,6 +14,10 @@ namespace shooter {
         transform.translation = position;
     }
 
+    Vector3 Player::camera_position() const {
+        return transform.translation + camera_offset;
+    }
+
     void move_player_forward(Player &player, float delta_time) {
         float displacement = delta_time * player.speed;
         utils::move_forward_fps(player.transform, displacement);
@@ -80,13 +84,19 @@ namespace shooter {
 
     Ray player_shoot(const Player &player) {
         Ray ray;
-        ray.position = player.transform.translation;
+        ray.position = player.camera_position();
         ray.direction = utils::get_forward_vector(player.transform);
         return ray;
     }
 
     void draw_collision_sphere(const Player &player) {
         DrawSphereWires(player.transform.translation, 3.0f, 5, 5, YELLOW);
+    }
+
+    void draw_player_ray(const Player &player) {
+        Ray ray = player_shoot(player);
+        Vector3 end_position = Vector3Add(ray.position, ray.direction * 5);
+        DrawLine3D(ray.position, end_position, RED);
     }
 
     void kill_player(Player &player) {

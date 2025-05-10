@@ -35,6 +35,8 @@ namespace shooter {
         PlayerState state = PlayerState::ALIVE;
 
         void set_player_position(Vector3 position);
+
+        Vector3 camera_position() const;
     };
 
     void move_player_forward(Player &player, float delta_time);
@@ -52,13 +54,14 @@ namespace shooter {
     void update_player(Player &player, float delta_time);
 
     void draw_player(const Player &player);
+        // @TODO: Remove This when we have more robust collision models
+    void draw_collision_sphere(const Player& player);
+
+    void draw_player_ray(const Player& player);
 
     Camera3D get_player_raylib_cam(const Player &player);
 
     Ray player_shoot(const Player &player);
-
-    // @TODO: Remove This when we have more robust collision models
-    void draw_collision_sphere(const Player& player);
 
     void kill_player(Player &player);
 

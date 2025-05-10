@@ -46,6 +46,7 @@ void shooter::Game::render() {
     BeginMode3D(camera);
 
     draw_player(m_player);
+    draw_player_ray(m_player);
 
     if (m_enemy_player.state == PlayerState::ALIVE) {
         draw_player(m_enemy_player);
