@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include "HUD.h"
 #include "Utils/Input.h"
 #include "Map.h"
 
@@ -38,6 +39,8 @@ void shooter::Game::render() {
     draw_map(m_map);
 
     EndMode3D();
+
+    draw_HUD(m_width, m_height);
 
     EndDrawing();
 }
