@@ -63,8 +63,8 @@ namespace shooter {
 
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
-                float x = (static_cast<float>(i) - center_x) * TILE_SIZE / 2;
-                float z = (static_cast<float>(j) - center_z) * TILE_SIZE / 2;
+                float x = (static_cast<float>(i) - center_x) * TILE_SIZE;
+                float z = (static_cast<float>(j) - center_z) * TILE_SIZE;
 
                 Wall floor = {
                     {x, 0.0f, z},
