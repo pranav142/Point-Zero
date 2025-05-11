@@ -4,10 +4,10 @@
 
 #include "Player.h"
 
-#include <iostream>
 
 #include "Utils/Input.h"
 #include "Utils/Movement.h"
+#include "Utils/BoundingBox.h"
 
 namespace shooter {
     void Player::set_player_position(Vector3 position) {
@@ -16,6 +16,10 @@ namespace shooter {
 
     Vector3 Player::camera_position() const {
         return transform.translation + camera_offset;
+    }
+
+    Vector3 Player::center() const {
+        return Vector3Add(transform.translation, {0.0f, PLAYER_HEIGHT / 2.0f, 0.0f});
     }
 
     void move_player_forward(Player &player, float delta_time) {
@@ -71,6 +75,10 @@ namespace shooter {
         DrawCapsule(start_position, end_position, PLAYER_RADIUS, 50, 50, LIGHTGRAY);
     }
 
+    void draw_player_bounding_box(const Player &player) {
+        DrawCubeWires(player.center(), PLAYER_BOUNDING_BOX_SIZE.x, PLAYER_BOUNDING_BOX_SIZE.y, PLAYER_BOUNDING_BOX_SIZE.z, YELLOW);
+    }
+
     Camera3D get_player_raylib_cam(const Player &player) {
         Vector3 translation = player.camera_position();
         Camera3D camera;
@@ -105,5 +113,14 @@ namespace shooter {
 
     void revive_player(Player &player) {
         player.state = PlayerState::ALIVE;
+    }
+
+    BoundingBox get_player_bounding_box(const Player &player) {
+        return utils::create_bounding_box(player.center(), PLAYER_BOUNDING_BOX_SIZE);
+    }
+
+    RayCollision get_ray_collision_player(Ray ray, const Player &player) {
+        BoundingBox bounding_box = get_player_bounding_box(player);
+        return GetRayCollisionBox(ray, bounding_box);
     }
 }

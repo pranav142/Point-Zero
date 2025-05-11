@@ -36,7 +36,7 @@ void shooter::Game::spawn_enemy() {
     revive_player(m_enemy_player);
 }
 
-void shooter::Game::render() {
+void shooter::Game::render() const {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
@@ -49,10 +49,13 @@ void shooter::Game::render() {
 
     draw_player(m_player);
     draw_player_ray(m_player);
+    draw_player_bounding_box(m_player);
 
     if (m_enemy_player.state == PlayerState::ALIVE) {
         draw_player(m_enemy_player);
-        draw_collision_sphere(m_enemy_player);
+        // draw_collision_mesh(m_enemy_player);
+        // draw_collision_sphere(m_enemy_player);
+        draw_player_bounding_box(m_enemy_player);
     }
 
     draw_map(m_map);
@@ -111,9 +114,11 @@ void shooter::Game::update() {
     if (m_mode == GameMode::PLAY) {
         update_player(m_player, m_delta_time);
 
+
+        // RLAPI RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform);
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && m_enemy_player.state == PlayerState::ALIVE) {
             Ray ray = player_shoot(m_player);
-            RayCollision collision = GetRayCollisionSphere(ray, m_enemy_player.transform.translation, 3.0f);
+            RayCollision collision = get_ray_collision_player(ray, m_enemy_player);
             if (collision.hit) {
                 kill_player(m_enemy_player);
             }

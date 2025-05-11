@@ -32,7 +32,7 @@ namespace shooter {
 
         void update();
 
-        void render();
+        void render() const;
 
         void toggle_debug();
 

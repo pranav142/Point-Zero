@@ -18,14 +18,15 @@ namespace shooter {
     constexpr float BODY_HEIGHT = 1.0f;
     constexpr float PLAYER_HEIGHT = BODY_HEIGHT + PLAYER_RADIUS * 2;
 
+    constexpr Vector3 PLAYER_BOUNDING_BOX_SIZE = {2 * PLAYER_RADIUS, PLAYER_HEIGHT, 2 * PLAYER_RADIUS};
+
     enum class PlayerState {
         DEAD,
         ALIVE
     };
+
     struct Player {
         Transform transform = Transform(Vector3(0.0f, 0.0f, 0.0f),
-                                        // @WTF! Why do we have to set the ROLL instead of pitch?
-                                        // QuaternionIdentity(),
                                         QuaternionFromEuler(0.0f, 0.0f, 0.0f),
                                         Vector3(1.0f, 1.0f, 1.0f));
         float speed = 5.0f;
@@ -38,6 +39,8 @@ namespace shooter {
         void set_player_position(Vector3 position);
 
         [[nodiscard]] Vector3 camera_position() const;
+
+        [[nodiscard]] Vector3 center() const;
     };
 
     void move_player_forward(Player &player, float delta_time);
@@ -55,8 +58,11 @@ namespace shooter {
     void update_player(Player &player, float delta_time);
 
     void draw_player(const Player &player);
-        // @TODO: Remove This when we have more robust collision models
-    void draw_collision_sphere(const Player& player);
+
+    // @TODO: Remove This when we have more robust collision models
+    void draw_collision_mesh(const Player& player);
+
+    void draw_player_bounding_box(const Player& player);
 
     void draw_player_ray(const Player& player);
 
@@ -67,6 +73,10 @@ namespace shooter {
     void kill_player(Player &player);
 
     void revive_player(Player &player);
+
+    BoundingBox get_player_bounding_box(const Player& player);
+
+    RayCollision get_ray_collision_player(Ray ray, const Player &player);
 }
 
 

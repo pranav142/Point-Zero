@@ -26,6 +26,7 @@ add_executable(shooter src/main.cpp
         src/Map.h
         src/HUD.cpp
         src/HUD.h
+        src/Utils/BoundingBox.h
 )
 
 target_link_libraries(shooter PRIVATE raylib)
