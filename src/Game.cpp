@@ -49,12 +49,9 @@ void shooter::Game::render() const {
 
     draw_player(m_player);
     draw_player_ray(m_player);
-    draw_player_bounding_box(m_player);
 
     if (m_enemy_player.state == PlayerState::ALIVE) {
         draw_player(m_enemy_player);
-        // draw_collision_mesh(m_enemy_player);
-        // draw_collision_sphere(m_enemy_player);
         draw_player_bounding_box(m_enemy_player);
     }
 

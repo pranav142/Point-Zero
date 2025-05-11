@@ -6,17 +6,33 @@
 #define MAP_H
 
 #include <string>
+#include <vector>
 
 #include "Core/Camera.h"
 
 namespace shooter {
     constexpr float TILE_SIZE = 10.0f;
-    constexpr float CEILING_HEIGHT = 5.0f;
+    constexpr float WALL_HEIGHT = 5.0f;
+    constexpr float WALL_THICKNESS = 0.1f;
 
     constexpr int ROWS = 5;
     constexpr int COLS = 5;
 
-    using Map = std::string[ROWS][COLS];
+    enum class WALL_ORIENTATION {
+        FLOOR,
+        LEFT_WALL,
+        RIGHT_WALL,
+        BACK_WALL,
+        FRONT_WALL,
+    };
+
+    // Position, Orientation,
+    struct Wall {
+        Vector3 center;
+        WALL_ORIENTATION orientation;
+    };
+
+    using Map = std::vector<Wall>;
 
     constexpr char EMPTY_TILE = '.';
     constexpr char LEFT_WALL = '[';
@@ -24,7 +40,8 @@ namespace shooter {
     constexpr char BACK_WALL = '-';
     constexpr char FRONT_WALL = '_';
 
-    static Map default_map = {
+    // initialize the map with this
+    static std::string default_map[ROWS][COLS] = {
         {"[-", "-", "-", "-", "-]"},
         {"[", ".", ".", "[-", "-]"},
         {"[", ".", ".", ".", "]"},
@@ -32,12 +49,19 @@ namespace shooter {
         {"[_", "_", "_", "_", "_]"},
     };
 
-    static void draw_floor(float x, float z);
-    static void draw_left_wall(float x, float z);
-    static void draw_right_wall(float x, float z);
-    static void draw_front_wall(float x, float z);
-    static void draw_back_wall(float x, float z);
-    static void draw_walls(std::string_view tile, float x, float z);
+    static void draw_floor(Vector3 center);
+
+    static void draw_left_wall(Vector3 center);
+
+    static void draw_right_wall(Vector3 center);
+
+    static void draw_back_wall(Vector3 center);
+
+    static void draw_front_wall(Vector3 center);
+
+    static void draw_wall(Wall wall);
+    
+    Map load_map(std::string tiles[ROWS][COLS]);
 
     void draw_map(const Map &map);
 } // shooter

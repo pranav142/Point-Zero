@@ -46,7 +46,7 @@ namespace shooter {
 
         GameMode m_mode = GameMode::PLAY;
 
-        Map& m_map = default_map;
+        Map m_map = load_map(default_map);
 
         float m_delta_time = 0.0f;
     };
