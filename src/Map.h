@@ -30,6 +30,7 @@ namespace shooter {
     struct Wall {
         Vector3 center;
         WALL_ORIENTATION orientation;
+        BoundingBox bounding_box;
     };
 
     using Map = std::vector<Wall>;
@@ -49,21 +50,21 @@ namespace shooter {
         {"[_", "_", "_", "_", "_]"},
     };
 
-    static void draw_floor(Vector3 center);
+    static void draw_wall(const Wall &wall);
 
-    static void draw_left_wall(Vector3 center);
+    static void draw_wall_bounding_box(const Wall &wall);
 
-    static void draw_right_wall(Vector3 center);
+    static void add_bounding_box(Wall &wall);
 
-    static void draw_back_wall(Vector3 center);
+    static Vector3 get_wall_dimensions(const Wall &wall);
 
-    static void draw_front_wall(Vector3 center);
+    static Color get_wall_color(const Wall &wall);
 
-    static void draw_wall(Wall wall);
-    
     Map load_map(std::string tiles[ROWS][COLS]);
 
     void draw_map(const Map &map);
+
+    void draw_map_collision_mesh(const Map &map);
 } // shooter
 
 #endif //MAP_H

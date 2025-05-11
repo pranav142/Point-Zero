@@ -56,6 +56,7 @@ void shooter::Game::render() const {
     }
 
     draw_map(m_map);
+    draw_map_collision_mesh(m_map);
 
     EndMode3D();
 
