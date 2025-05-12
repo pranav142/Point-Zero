@@ -27,7 +27,6 @@ namespace shooter {
         FRONT_WALL,
     };
 
-    // Position, Orientation,
     struct Wall {
         Vector3 center;
         WallOrientation orientation;
@@ -42,7 +41,6 @@ namespace shooter {
     constexpr char BACK_WALL = '-';
     constexpr char FRONT_WALL = '_';
 
-    // initialize the map with this
     static std::string default_map[ROWS][COLS] = {
         {"[-", "-", "-", "-", "-]"},
         {"[", ".", ".", "[-", "-]"},
@@ -56,7 +54,6 @@ namespace shooter {
         core::BBOXCollision collision;
     };
 
-    using WallCollisions = std::vector<WallCollision>;
 
     static void draw_wall(const Wall &wall);
 
@@ -78,7 +75,7 @@ namespace shooter {
 
     std::string wall_orientation_to_string(WallOrientation orientation);
 
-    WallCollisions check_collision_map(Map &map, const BoundingBox &bounding_box);
+    WallCollision check_collision_map(Map &map, const BoundingBox &bounding_box);
 } // shooter
 
 #endif //MAP_H

@@ -26,6 +26,8 @@ namespace shooter {
 
         void spawn_enemy();
 
+        void resolve_player_collisions();
+
         void handle_input();
 
         void update_debug_camera();

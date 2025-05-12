@@ -14,6 +14,10 @@ namespace shooter {
         transform.translation = position;
     }
 
+    void Player::set_player_center(Vector3 center) {
+        transform.translation = Vector3Subtract(center, {0.0f, PLAYER_HEIGHT / 2.0f, 0.0f});
+    }
+
     Vector3 Player::camera_position() const {
         return transform.translation + camera_offset;
     }
@@ -21,26 +25,6 @@ namespace shooter {
     Vector3 Player::center() const {
         return Vector3Add(transform.translation, {0.0f, PLAYER_HEIGHT / 2.0f, 0.0f});
     }
-
-    // void move_player_forward(Player &player, float delta_time) {
-    //     float displacement = delta_time * player.speed;
-    //     utils::move_forward_fps(player.transform, displacement);
-    // }
-
-    // void move_player_backward(Player &player, float delta_time) {
-    //     float displacement = delta_time * player.speed;
-    //     utils::move_forward_fps(player.transform, -displacement);
-    // }
-
-    // void move_player_left(Player &player, float delta_time) {
-    //     float displacement = delta_time * player.;
-    //     utils::move_right(player.transform, -displacement);
-    // }
-
-    // void move_player_right(Player &player, float delta_time) {
-    //     float displacement = delta_time * player.speed;
-    //     utils::move_right(player.transform, displacement);
-    // }
 
     void yaw_player(Player &player, float dx) {
         const float d_yaw = utils::yaw_delta_rad(-dx, player.sensitivity);
@@ -77,6 +61,21 @@ namespace shooter {
 
     void move_player(Player &player, float delta_time) {
         player.transform.translation += player.velocity * delta_time;
+    }
+
+    void resolve_player_collision(Player &player, core::BBOXCollision collision) {
+        player.set_player_center(player.center() - collision.minimum_translation_vector);
+        if (collision.minimum_translation_vector.x != 0) {
+            player.velocity.x = 0;
+        }
+
+        if (collision.minimum_translation_vector.y != 0) {
+            player.velocity.y = 0;
+        }
+
+        if (collision.minimum_translation_vector.z != 0) {
+            player.velocity.z = 0;
+        }
     }
 
     void draw_player(const Player &player) {
@@ -130,12 +129,12 @@ namespace shooter {
         return utils::create_bounding_box(player.center(), PLAYER_BOUNDING_BOX_SIZE);
     }
 
-    RayCollision get_ray_collision_player(Ray ray, const Player &player) {
+    RayCollision get_ray_collision_player(const Ray &ray, const Player &player) {
         BoundingBox bounding_box = get_player_bounding_box(player);
         return GetRayCollisionBox(ray, bounding_box);
     }
 
-    WallCollisions check_player_collides_with_map(Map &map, const Player &player) {
+    WallCollision check_player_collides_with_map(Map &map, const Player &player) {
         return check_collision_map(map, get_player_bounding_box(player));
     }
 }

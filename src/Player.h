@@ -6,9 +6,10 @@
 #define PLAYER_H
 
 #include "Map.h"
+
 #include "raylib.h"
 #include "raymath.h"
-#include "Core/Camera.h"
+#include "Core/Collisions.h"
 
 namespace shooter {
     // Player is a capsule
@@ -42,18 +43,12 @@ namespace shooter {
 
         void set_player_position(Vector3 position);
 
+        void set_player_center(Vector3 center);
+
         [[nodiscard]] Vector3 camera_position() const;
 
         [[nodiscard]] Vector3 center() const;
     };
-
-    void move_player_forward(Player &player, float delta_time);
-
-    void move_player_backward(Player &player, float delta_time);
-
-    void move_player_left(Player &player, float delta_time);
-
-    void move_player_right(Player &player, float delta_time);
 
     void yaw_player(Player &player, float dx);
 
@@ -62,6 +57,8 @@ namespace shooter {
     void update_player(Player &player);
 
     void move_player(Player& player, float delta_time);
+
+    void resolve_player_collision(Player& player, core::BBOXCollision collision);
 
     void draw_player(const Player &player);
 
@@ -82,9 +79,9 @@ namespace shooter {
 
     BoundingBox get_player_bounding_box(const Player& player);
 
-    RayCollision get_ray_collision_player(Ray ray, const Player &player);
+    RayCollision get_ray_collision_player(const Ray &ray, const Player &player);
 
-    WallCollisions check_player_collides_with_map(Map& map, const Player& player);
+    WallCollision check_player_collides_with_map(Map& map, const Player& player);
 }
 
 

@@ -15,7 +15,7 @@ namespace utils {
     }
 
     inline Vector3 get_bounding_box_center(const BoundingBox& box) {
-        return Vector3Subtract(box.max, box.min) /  2.0f;
+        return Vector3Scale(Vector3Add(box.max, box.min), 0.5f);
     }
 
     inline Vector3 get_bounding_box_dimensions(const BoundingBox& box) {

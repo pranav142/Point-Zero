@@ -13,7 +13,7 @@ void shooter::Game::init() {
 
     m_debug_camera.set_position(Vector3(5.0f, 5.0f, 0.0f));
     m_enemy_player.set_player_position(Vector3(5.0f, 0.0f, 5.0f));
-
+    m_player.set_player_position(Vector3(0.0f, 0.0f, 0.0f));
     DisableCursor();
 
     SetTargetFPS(144);
@@ -22,7 +22,7 @@ void shooter::Game::init() {
 void shooter::Game::run() {
     while (!WindowShouldClose()) {
         m_delta_time = GetFrameTime();
-        std::cout << 1 / m_delta_time << std::endl;
+        // std::cout << 1 / m_delta_time << std::endl;
 
         handle_input();
         update();
@@ -34,6 +34,17 @@ void shooter::Game::run() {
 
 void shooter::Game::spawn_enemy() {
     revive_player(m_enemy_player);
+}
+
+void shooter::Game::resolve_player_collisions() {
+    WallCollision wall_collision = check_player_collides_with_map(m_map, m_player);
+    int count = 0;
+    constexpr int MAX_ITERS = 5;
+    while (wall_collision.collision.collided && count <= MAX_ITERS) {
+        resolve_player_collision(m_player, wall_collision.collision);
+        wall_collision = check_player_collides_with_map(m_map, m_player);
+        count++;
+    };
 }
 
 void shooter::Game::render() const {
@@ -112,25 +123,15 @@ void shooter::Game::update() {
     if (m_mode == GameMode::PLAY) {
         update_player(m_player);
         move_player(m_player, m_delta_time);
+    }
 
-        WallCollisions collisions = check_player_collides_with_map(m_map, m_player);
-        for (auto &collision: collisions) {
-            // m_player.set_player_position(m_player.tr)
-            std::cout << "Player Collided ";
-            print_wall(*collision.wall);
-            std::cout << std::endl;
-            // update player velocity
-            // update player position
-        }
+    resolve_player_collisions();
 
-
-        // RLAPI RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform);
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && m_enemy_player.state == PlayerState::ALIVE) {
-            Ray ray = player_shoot(m_player);
-            RayCollision collision = get_ray_collision_player(ray, m_enemy_player);
-            if (collision.hit) {
-                kill_player(m_enemy_player);
-            }
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && m_enemy_player.state == PlayerState::ALIVE) {
+        Ray ray = player_shoot(m_player);
+        RayCollision collision = get_ray_collision_player(ray, m_enemy_player);
+        if (collision.hit) {
+            kill_player(m_enemy_player);
         }
     }
 }

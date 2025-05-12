@@ -154,17 +154,16 @@ namespace shooter {
         }
     }
 
-    WallCollisions check_collision_map(Map &map, const BoundingBox &bounding_box) {
-        WallCollisions wall_collisions;
+    WallCollision check_collision_map(Map &map, const BoundingBox &bounding_box) {
         for (auto &wall: map) {
             core::BBOXCollision collision = core::check_collision_boxes(wall.bounding_box, bounding_box);
             if (collision.collided) {
                 WallCollision wall_collision{};
                 wall_collision.wall = &wall;
                 wall_collision.collision = collision;
-                wall_collisions.push_back(wall_collision);
+                return wall_collision;
             }
         }
-        return wall_collisions;
+        return WallCollision{};
     }
 }
