@@ -110,7 +110,18 @@ void shooter::Game::update() {
     }
 
     if (m_mode == GameMode::PLAY) {
-        update_player(m_player, m_delta_time);
+        update_player(m_player);
+        move_player(m_player, m_delta_time);
+
+        WallCollisions collisions = check_player_collides_with_map(m_map, m_player);
+        for (auto &collision: collisions) {
+            // m_player.set_player_position(m_player.tr)
+            std::cout << "Player Collided ";
+            print_wall(*collision.wall);
+            std::cout << std::endl;
+            // update player velocity
+            // update player position
+        }
 
 
         // RLAPI RayCollision GetRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform);

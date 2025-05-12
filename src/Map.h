@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "Core/Camera.h"
+#include "Core/Collisions.h"
 
 namespace shooter {
     constexpr float TILE_SIZE = 10.0f;
@@ -18,7 +19,7 @@ namespace shooter {
     constexpr int ROWS = 5;
     constexpr int COLS = 5;
 
-    enum class WALL_ORIENTATION {
+    enum class WallOrientation {
         FLOOR,
         LEFT_WALL,
         RIGHT_WALL,
@@ -29,7 +30,7 @@ namespace shooter {
     // Position, Orientation,
     struct Wall {
         Vector3 center;
-        WALL_ORIENTATION orientation;
+        WallOrientation orientation;
         BoundingBox bounding_box;
     };
 
@@ -50,6 +51,13 @@ namespace shooter {
         {"[_", "_", "_", "_", "_]"},
     };
 
+    struct WallCollision {
+        Wall* wall;
+        core::BBOXCollision collision;
+    };
+
+    using WallCollisions = std::vector<WallCollision>;
+
     static void draw_wall(const Wall &wall);
 
     static void draw_wall_bounding_box(const Wall &wall);
@@ -65,6 +73,12 @@ namespace shooter {
     void draw_map(const Map &map);
 
     void draw_map_collision_mesh(const Map &map);
+
+    void print_wall(const Wall &wall);
+
+    std::string wall_orientation_to_string(WallOrientation orientation);
+
+    WallCollisions check_collision_map(Map &map, const BoundingBox &bounding_box);
 } // shooter
 
 #endif //MAP_H

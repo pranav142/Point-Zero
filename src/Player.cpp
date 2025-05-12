@@ -22,25 +22,25 @@ namespace shooter {
         return Vector3Add(transform.translation, {0.0f, PLAYER_HEIGHT / 2.0f, 0.0f});
     }
 
-    void move_player_forward(Player &player, float delta_time) {
-        float displacement = delta_time * player.speed;
-        utils::move_forward_fps(player.transform, displacement);
-    }
+    // void move_player_forward(Player &player, float delta_time) {
+    //     float displacement = delta_time * player.speed;
+    //     utils::move_forward_fps(player.transform, displacement);
+    // }
 
-    void move_player_backward(Player &player, float delta_time) {
-        float displacement = delta_time * player.speed;
-        utils::move_forward_fps(player.transform, -displacement);
-    }
+    // void move_player_backward(Player &player, float delta_time) {
+    //     float displacement = delta_time * player.speed;
+    //     utils::move_forward_fps(player.transform, -displacement);
+    // }
 
-    void move_player_left(Player &player, float delta_time) {
-        float displacement = delta_time * player.speed;
-        utils::move_right(player.transform, -displacement);
-    }
+    // void move_player_left(Player &player, float delta_time) {
+    //     float displacement = delta_time * player.;
+    //     utils::move_right(player.transform, -displacement);
+    // }
 
-    void move_player_right(Player &player, float delta_time) {
-        float displacement = delta_time * player.speed;
-        utils::move_right(player.transform, displacement);
-    }
+    // void move_player_right(Player &player, float delta_time) {
+    //     float displacement = delta_time * player.speed;
+    //     utils::move_right(player.transform, displacement);
+    // }
 
     void yaw_player(Player &player, float dx) {
         const float d_yaw = utils::yaw_delta_rad(-dx, player.sensitivity);
@@ -52,22 +52,32 @@ namespace shooter {
         utils::rotate_pitch(player.transform, d_pitch);
     }
 
-    void update_player(Player &player, float delta_time) {
+    void update_player(Player &player) {
         const auto [dx, dy] = GetMouseDelta();
 
         yaw_player(player, dx);
         pitch_player(player, -dy);
 
+        Vector3 input_direction = {0.0f, 0.0f, 0.0f};
         if (IsKeyDown(KEY_W))
-            move_player_forward(player, delta_time);
-        if (IsKeyDown(KEY_A))
-            move_player_left(player, delta_time);
+            input_direction += utils::get_forward_vector_fps(player.transform);
         if (IsKeyDown(KEY_S))
-            move_player_backward(player, delta_time);
-        if (IsKeyDown(KEY_D))
-            move_player_right(player, delta_time);
+            input_direction -= utils::get_forward_vector_fps(player.transform);
+        if (IsKeyDown(KEY_A))
+            input_direction -= utils::get_right_vector(player.transform);
+        else if (IsKeyDown(KEY_D))
+            input_direction += utils::get_right_vector(player.transform);
+
+        if (input_direction != Vector3(0.0f, 0.0f, 0.0f)) {
+            input_direction = Vector3Normalize(input_direction);
+        }
+
+        player.velocity = input_direction * PLAYER_SPEED;
     }
 
+    void move_player(Player &player, float delta_time) {
+        player.transform.translation += player.velocity * delta_time;
+    }
 
     void draw_player(const Player &player) {
         Vector3 start_position = Vector3Add(player.transform.translation, Vector3(0.0f, PLAYER_RADIUS - 0.01f, 0.0f));
@@ -76,7 +86,8 @@ namespace shooter {
     }
 
     void draw_player_bounding_box(const Player &player) {
-        DrawCubeWires(player.center(), PLAYER_BOUNDING_BOX_SIZE.x, PLAYER_BOUNDING_BOX_SIZE.y, PLAYER_BOUNDING_BOX_SIZE.z, YELLOW);
+        DrawCubeWires(player.center(), PLAYER_BOUNDING_BOX_SIZE.x, PLAYER_BOUNDING_BOX_SIZE.y,
+                      PLAYER_BOUNDING_BOX_SIZE.z, YELLOW);
     }
 
     Camera3D get_player_raylib_cam(const Player &player) {
@@ -122,5 +133,9 @@ namespace shooter {
     RayCollision get_ray_collision_player(Ray ray, const Player &player) {
         BoundingBox bounding_box = get_player_bounding_box(player);
         return GetRayCollisionBox(ray, bounding_box);
+    }
+
+    WallCollisions check_player_collides_with_map(Map &map, const Player &player) {
+        return check_collision_map(map, get_player_bounding_box(player));
     }
 }

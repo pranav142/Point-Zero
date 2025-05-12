@@ -13,6 +13,14 @@ namespace utils {
         Vector3 maximum = {center.x + size.x/2, center.y + size.y/2, center.z + size.z/2};
         return {minimum, maximum};
     }
+
+    inline Vector3 get_bounding_box_center(const BoundingBox& box) {
+        return Vector3Subtract(box.max, box.min) /  2.0f;
+    }
+
+    inline Vector3 get_bounding_box_dimensions(const BoundingBox& box) {
+        return Vector3Subtract(box.max, box.min);
+    }
 }
 
 #endif //BOUNDINGBOX_H

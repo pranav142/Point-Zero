@@ -5,6 +5,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "Map.h"
 #include "raylib.h"
 #include "raymath.h"
 #include "Core/Camera.h"
@@ -20,6 +21,8 @@ namespace shooter {
 
     constexpr Vector3 PLAYER_BOUNDING_BOX_SIZE = {2 * PLAYER_RADIUS, PLAYER_HEIGHT, 2 * PLAYER_RADIUS};
 
+    constexpr float PLAYER_SPEED = 5.0f;
+
     enum class PlayerState {
         DEAD,
         ALIVE
@@ -29,7 +32,8 @@ namespace shooter {
         Transform transform = Transform(Vector3(0.0f, 0.0f, 0.0f),
                                         QuaternionFromEuler(0.0f, 0.0f, 0.0f),
                                         Vector3(1.0f, 1.0f, 1.0f));
-        float speed = 5.0f;
+        Vector3 velocity = {0.0f, 0.0f, 0.0f};
+
         float sensitivity = 0.2f;
 
         Vector3 camera_offset = Vector3(0.0f, PLAYER_HEIGHT + 0.05f, 0.0f);
@@ -55,7 +59,9 @@ namespace shooter {
 
     void pitch_player(Player &player, float dy);
 
-    void update_player(Player &player, float delta_time);
+    void update_player(Player &player);
+
+    void move_player(Player& player, float delta_time);
 
     void draw_player(const Player &player);
 
@@ -77,6 +83,8 @@ namespace shooter {
     BoundingBox get_player_bounding_box(const Player& player);
 
     RayCollision get_ray_collision_player(Ray ray, const Player &player);
+
+    WallCollisions check_player_collides_with_map(Map& map, const Player& player);
 }
 
 

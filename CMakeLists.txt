@@ -27,6 +27,8 @@ add_executable(shooter src/main.cpp
         src/HUD.cpp
         src/HUD.h
         src/Utils/BoundingBox.h
+        src/Core/Collisions.cpp
+        src/Core/Collisions.h
 )
 
 target_link_libraries(shooter PRIVATE raylib)

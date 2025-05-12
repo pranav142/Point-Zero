@@ -25,15 +25,15 @@ namespace shooter {
     }
 
     Vector3 get_wall_dimensions(const Wall &wall) {
-        if (wall.orientation == WALL_ORIENTATION::FRONT_WALL || wall.orientation == WALL_ORIENTATION::BACK_WALL) {
+        if (wall.orientation == WallOrientation::FRONT_WALL || wall.orientation == WallOrientation::BACK_WALL) {
             return {WALL_THICKNESS, WALL_HEIGHT, TILE_SIZE};
         }
 
-        if (wall.orientation == WALL_ORIENTATION::LEFT_WALL || wall.orientation == WALL_ORIENTATION::RIGHT_WALL) {
+        if (wall.orientation == WallOrientation::LEFT_WALL || wall.orientation == WallOrientation::RIGHT_WALL) {
             return {TILE_SIZE, WALL_HEIGHT, WALL_THICKNESS};
         }
 
-        if (wall.orientation == WALL_ORIENTATION::FLOOR) {
+        if (wall.orientation == WallOrientation::FLOOR) {
             return {TILE_SIZE, WALL_THICKNESS, TILE_SIZE};
         }
 
@@ -41,15 +41,15 @@ namespace shooter {
     }
 
     Color get_wall_color(const Wall &wall) {
-         if (wall.orientation == WALL_ORIENTATION::FRONT_WALL || wall.orientation == WALL_ORIENTATION::BACK_WALL) {
+         if (wall.orientation == WallOrientation::FRONT_WALL || wall.orientation == WallOrientation::BACK_WALL) {
              return GREEN;
         }
 
-        if (wall.orientation == WALL_ORIENTATION::LEFT_WALL || wall.orientation == WALL_ORIENTATION::RIGHT_WALL) {
+        if (wall.orientation == WallOrientation::LEFT_WALL || wall.orientation == WallOrientation::RIGHT_WALL) {
             return PURPLE;
         }
 
-        if (wall.orientation == WALL_ORIENTATION::FLOOR) {
+        if (wall.orientation == WallOrientation::FLOOR) {
             return BLUE;
         }
 
@@ -68,7 +68,7 @@ namespace shooter {
 
                 Wall floor = {
                     {x, 0.0f, z},
-                    WALL_ORIENTATION::FLOOR,
+                    WallOrientation::FLOOR,
                 };
                 add_bounding_box(floor);
                 map.push_back(floor);
@@ -78,7 +78,7 @@ namespace shooter {
                         Vector3 center = {x, WALL_HEIGHT / 2.0f, z - TILE_SIZE / 2.0f};
                         Wall wall = {
                             center,
-                            WALL_ORIENTATION::LEFT_WALL,
+                            WallOrientation::LEFT_WALL,
                         };
                         add_bounding_box(wall);
                         map.push_back(wall);
@@ -88,7 +88,7 @@ namespace shooter {
                         Vector3 center = {x, WALL_HEIGHT / 2.0f, z + TILE_SIZE / 2.0f};
                         Wall wall = {
                             center,
-                            WALL_ORIENTATION::RIGHT_WALL,
+                            WallOrientation::RIGHT_WALL,
                         };
                         add_bounding_box(wall);
                         map.push_back(wall);
@@ -98,7 +98,7 @@ namespace shooter {
                         Vector3 center = {x + TILE_SIZE / 2, WALL_HEIGHT / 2.0f, z};
                         Wall wall = {
                             center,
-                            WALL_ORIENTATION::FRONT_WALL,
+                            WallOrientation::FRONT_WALL,
                         };
                         add_bounding_box(wall);
                         map.push_back(wall);
@@ -108,7 +108,7 @@ namespace shooter {
                         Vector3 center = {x - TILE_SIZE / 2, WALL_HEIGHT / 2.0f, z};
                         Wall wall = {
                             center,
-                            WALL_ORIENTATION::BACK_WALL,
+                            WallOrientation::BACK_WALL,
                         };
                         add_bounding_box(wall);
                         map.push_back(wall);
@@ -130,5 +130,41 @@ namespace shooter {
         for (auto &wall: map) {
             draw_wall_bounding_box(wall);
         }
+    }
+
+    void print_wall(const Wall &wall) {
+        std::string orientation = wall_orientation_to_string(wall.orientation);
+        std::cout << "Wall; Orientation: " << orientation;
+    }
+
+    std::string wall_orientation_to_string(WallOrientation orientation) {
+        switch (orientation) {
+            case WallOrientation::FLOOR:
+                return "FLOOR";
+            case WallOrientation::LEFT_WALL:
+                return "LEFT_WALL";
+            case WallOrientation::RIGHT_WALL:
+                return "RIGHT_WALL";
+            case WallOrientation::FRONT_WALL:
+                return "FRONT_WALL";
+            case WallOrientation::BACK_WALL:
+                return "BACK_WALL";
+            default:
+                return "UNKNOWN";
+        }
+    }
+
+    WallCollisions check_collision_map(Map &map, const BoundingBox &bounding_box) {
+        WallCollisions wall_collisions;
+        for (auto &wall: map) {
+            core::BBOXCollision collision = core::check_collision_boxes(wall.bounding_box, bounding_box);
+            if (collision.collided) {
+                WallCollision wall_collision{};
+                wall_collision.wall = &wall;
+                wall_collision.collision = collision;
+                wall_collisions.push_back(wall_collision);
+            }
+        }
+        return wall_collisions;
     }
 }

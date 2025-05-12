@@ -30,6 +30,12 @@ namespace utils {
         return Vector3RotateByQuaternion(UP, transform.rotation);
     }
 
+    inline Vector3 get_forward_vector_fps(const Transform &transform) {
+        Vector3 forward = get_forward_vector(transform);
+        forward.y = 0;
+        return Vector3Normalize(forward);
+    }
+
     inline float get_current_pitch(const Transform &transform) {
         const Vector3 forward = get_forward_vector(transform);
         return asinf(Clamp(forward.y, -1.0f, 1.0f));
@@ -62,9 +68,7 @@ namespace utils {
     }
 
     inline void move_forward_fps(Transform &transform, const float displacement) {
-        Vector3 forward = get_forward_vector(transform);
-        forward.y = 0;
-        forward = Vector3Normalize(forward);
+        Vector3 forward = get_forward_vector_fps(transform);
         transform.translation = Vector3Add(transform.translation, forward * displacement);
     }
 }
