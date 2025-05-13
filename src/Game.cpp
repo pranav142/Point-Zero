@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <ostream>
-#include <signal.h>
 
 #include "HUD.h"
 #include "Utils/Input.h"
@@ -15,6 +14,8 @@ void shooter::Game::init() {
     m_enemy_player.set_player_position(Vector3(5.0f, 0.0f, 5.0f));
     m_player.set_player_position(Vector3(0.0f, 0.0f, 0.0f));
     DisableCursor();
+
+    m_map = load_map(default_map);
 
     SetTargetFPS(144);
 }
@@ -29,6 +30,7 @@ void shooter::Game::run() {
         render();
     }
 
+    unload_map(m_map);
     CloseWindow();
 }
 

@@ -28,9 +28,12 @@ namespace shooter {
     };
 
     struct Wall {
-        Vector3 center;
+        Vector3 center{};
         WallOrientation orientation;
-        BoundingBox bounding_box;
+        BoundingBox bounding_box{};
+
+        // Mesh mesh{};
+        Model model{};
     };
 
     using Map = std::vector<Wall>;
@@ -55,17 +58,23 @@ namespace shooter {
     };
 
 
+    static Wall create_wall(Vector3 center, WallOrientation orientation);
+
     static void draw_wall(const Wall &wall);
 
     static void draw_wall_bounding_box(const Wall &wall);
 
-    static void add_bounding_box(Wall &wall);
+    static BoundingBox calculate_bounding_box(const Wall &wall);
 
     static Vector3 get_wall_dimensions(const Wall &wall);
 
     static Color get_wall_color(const Wall &wall);
 
+    static Mesh generate_wall_mesh(const Wall& wall);
+
     Map load_map(std::string tiles[ROWS][COLS]);
+
+    void unload_map(Map& map);
 
     void draw_map(const Map &map);
 
