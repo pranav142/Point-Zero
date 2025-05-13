@@ -82,6 +82,8 @@ namespace shooter {
     RayCollision get_ray_collision_player(const Ray &ray, const Player &player);
 
     WallCollision check_player_collides_with_map(Map& map, const Player& player);
+
+    core::BBOXCollision check_player_collides_player(const Player &player, const Player &other);
 }
 
 

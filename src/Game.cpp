@@ -22,7 +22,7 @@ void shooter::Game::init() {
 void shooter::Game::run() {
     while (!WindowShouldClose()) {
         m_delta_time = GetFrameTime();
-        // std::cout << 1 / m_delta_time << std::endl;
+        std::cout << 1 / m_delta_time << std::endl;
 
         handle_input();
         update();
@@ -37,7 +37,14 @@ void shooter::Game::spawn_enemy() {
 }
 
 void shooter::Game::resolve_player_collisions() {
+    if (m_enemy_player.state == PlayerState::ALIVE) {
+        core::BBOXCollision player_collision = check_player_collides_player(m_enemy_player, m_player);
+        resolve_player_collision(m_player, player_collision);
+    }
+
+
     WallCollision wall_collision = check_player_collides_with_map(m_map, m_player);
+
     int count = 0;
     constexpr int MAX_ITERS = 5;
     while (wall_collision.collision.collided && count <= MAX_ITERS) {
@@ -45,6 +52,14 @@ void shooter::Game::resolve_player_collisions() {
         wall_collision = check_player_collides_with_map(m_map, m_player);
         count++;
     };
+
+    wall_collision = check_player_collides_with_map(m_map, m_enemy_player);
+    count = 0;
+    while (wall_collision.collision.collided && count <= MAX_ITERS) {
+        resolve_player_collision(m_enemy_player, wall_collision.collision);
+        wall_collision = check_player_collides_with_map(m_map, m_enemy_player);
+        count++;
+    }
 }
 
 void shooter::Game::render() const {
@@ -60,6 +75,7 @@ void shooter::Game::render() const {
 
     draw_player(m_player);
     draw_player_ray(m_player);
+    draw_player_bounding_box(m_player);
 
     if (m_enemy_player.state == PlayerState::ALIVE) {
         draw_player(m_enemy_player);

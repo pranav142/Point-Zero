@@ -64,6 +64,10 @@ namespace shooter {
     }
 
     void resolve_player_collision(Player &player, core::BBOXCollision collision) {
+        if (!collision.collided) {
+            return;
+        }
+
         player.set_player_center(player.center() - collision.minimum_translation_vector);
         if (collision.minimum_translation_vector.x != 0) {
             player.velocity.x = 0;
@@ -136,5 +140,9 @@ namespace shooter {
 
     WallCollision check_player_collides_with_map(Map &map, const Player &player) {
         return check_collision_map(map, get_player_bounding_box(player));
+    }
+
+    core::BBOXCollision check_player_collides_player(const Player &player, const Player &other) {
+        return core::check_collision_boxes(get_player_bounding_box(player), get_player_bounding_box(other));
     }
 }
