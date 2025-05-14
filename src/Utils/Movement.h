@@ -71,6 +71,12 @@ namespace utils {
         Vector3 forward = get_forward_vector_fps(transform);
         transform.translation = Vector3Add(transform.translation, forward * displacement);
     }
+
+    inline float get_yaw_from_quaternion(Quaternion q) {
+        float yaw = atan2f(2.0f * (q.y * q.w + q.x * q.z),
+                           1.0f - 2.0f * (q.y * q.y + q.z * q.z));
+        return RAD2DEG * yaw; // in degrees
+    }
 }
 
 #endif

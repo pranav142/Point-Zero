@@ -37,9 +37,13 @@ namespace shooter {
 
         float sensitivity = 0.2f;
 
-        Vector3 camera_offset = Vector3(0.0f, PLAYER_HEIGHT + 0.05f, 0.0f);
+        // How do we make this clearer?
+        Vector3 camera_position_offset = Vector3(0.0f, PLAYER_HEIGHT - 0.2, 0.0f);
+        Quaternion camera_rotation_offset = QuaternionFromEuler(0.0f, 0.0f, 0.0f);
 
         PlayerState state = PlayerState::ALIVE;
+
+        Model model;
 
         void set_player_position(Vector3 position);
 
@@ -47,8 +51,18 @@ namespace shooter {
 
         [[nodiscard]] Vector3 camera_position() const;
 
+        [[nodiscard]] Vector3 camera_forward() const;
+
+        [[nodiscard]] Vector3 camera_up() const;
+
+        [[nodiscard]] Vector3 camera_right() const;
+
+        [[nodiscard]] Vector3 camera_forward_fps() const;
+
         [[nodiscard]] Vector3 center() const;
     };
+
+    Player create_player();
 
     void yaw_player(Player &player, float dx);
 
@@ -62,7 +76,6 @@ namespace shooter {
 
     void draw_player(const Player &player);
 
-    // @TODO: Remove This when we have more robust collision models
     void draw_collision_mesh(const Player& player);
 
     void draw_player_bounding_box(const Player& player);
@@ -84,6 +97,8 @@ namespace shooter {
     WallCollision check_player_collides_with_map(Map& map, const Player& player);
 
     core::BBOXCollision check_player_collides_player(const Player &player, const Player &other);
+
+    void unload_player(const Player& player);
 }
 
 

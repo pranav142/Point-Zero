@@ -4,6 +4,9 @@
 
 #include "Player.h"
 
+#include <iostream>
+#include <ostream>
+
 
 #include "Utils/Input.h"
 #include "Utils/Movement.h"
@@ -19,11 +22,33 @@ namespace shooter {
     }
 
     Vector3 Player::camera_position() const {
-        return transform.translation + camera_offset;
+        return camera_forward_fps() * 0.5f + camera_position_offset + transform.translation;
+    }
+
+    Vector3 Player::camera_forward() const {
+        return Vector3RotateByQuaternion(utils::get_forward_vector(transform), camera_rotation_offset);
+    }
+
+    Vector3 Player::camera_up() const {
+        return Vector3RotateByQuaternion(utils::get_up_vector(transform), camera_rotation_offset);
+    }
+
+    Vector3 Player::camera_right() const {
+        return Vector3RotateByQuaternion(utils::get_right_vector(transform), camera_rotation_offset);
+    }
+
+    Vector3 Player::camera_forward_fps() const {
+        return Vector3RotateByQuaternion(utils::get_forward_vector_fps(transform), camera_rotation_offset);
     }
 
     Vector3 Player::center() const {
         return Vector3Add(transform.translation, {0.0f, PLAYER_HEIGHT / 2.0f, 0.0f});
+    }
+
+    Player create_player() {
+        Player player;
+        player.model = LoadModel("models/Character_Soldier.gltf");
+        return player;
     }
 
     void yaw_player(Player &player, float dx) {
@@ -44,13 +69,13 @@ namespace shooter {
 
         Vector3 input_direction = {0.0f, 0.0f, 0.0f};
         if (IsKeyDown(KEY_W))
-            input_direction += utils::get_forward_vector_fps(player.transform);
+            input_direction += player.camera_forward_fps();
         if (IsKeyDown(KEY_S))
-            input_direction -= utils::get_forward_vector_fps(player.transform);
+            input_direction -= player.camera_forward_fps();
         if (IsKeyDown(KEY_A))
-            input_direction -= utils::get_right_vector(player.transform);
+            input_direction -= player.camera_right();
         else if (IsKeyDown(KEY_D))
-            input_direction += utils::get_right_vector(player.transform);
+            input_direction += player.camera_right();
 
         if (input_direction != Vector3(0.0f, 0.0f, 0.0f)) {
             input_direction = Vector3Normalize(input_direction);
@@ -83,9 +108,10 @@ namespace shooter {
     }
 
     void draw_player(const Player &player) {
-        Vector3 start_position = Vector3Add(player.transform.translation, Vector3(0.0f, PLAYER_RADIUS - 0.01f, 0.0f));
-        Vector3 end_position = Vector3Add(start_position, Vector3(0.0f, BODY_HEIGHT, 0.0f));
-        DrawCapsule(start_position, end_position, PLAYER_RADIUS, 50, 50, LIGHTGRAY);
+        // float yaw = utils::get_yaw_from_quaternion(player.transform.rotation);
+        Vector3 forward = player.camera_forward_fps();
+        float yaw = atan2f(forward.x, forward.z) * RAD2DEG;
+        DrawModelEx(player.model, player.transform.translation, utils::UP, yaw,{1.0f, 1.0f, 1.0f}, WHITE);
     }
 
     void draw_player_bounding_box(const Player &player) {
@@ -97,8 +123,8 @@ namespace shooter {
         Vector3 translation = player.camera_position();
         Camera3D camera;
         camera.position = translation;
-        camera.target = Vector3Add(translation, utils::get_forward_vector(player.transform));
-        camera.up = utils::get_up_vector(player.transform);
+        camera.target = Vector3Add(translation, player.camera_forward());
+        camera.up = player.camera_up();
         camera.fovy = 45.0f;
         camera.projection = CAMERA_PERSPECTIVE;
         return camera;
@@ -107,7 +133,7 @@ namespace shooter {
     Ray player_shoot(const Player &player) {
         Ray ray;
         ray.position = player.camera_position();
-        ray.direction = utils::get_forward_vector(player.transform);
+        ray.direction = player.camera_forward();
         return ray;
     }
 
@@ -144,5 +170,9 @@ namespace shooter {
 
     core::BBOXCollision check_player_collides_player(const Player &player, const Player &other) {
         return core::check_collision_boxes(get_player_bounding_box(player), get_player_bounding_box(other));
+    }
+
+    void unload_player(const Player &player) {
+        UnloadModel(player.model);
     }
 }

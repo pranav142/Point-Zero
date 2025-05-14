@@ -10,6 +10,9 @@
 void shooter::Game::init() {
     InitWindow(m_width, m_height, "SHOOTER");
 
+    m_player = create_player();
+    m_enemy_player = create_player();
+
     m_debug_camera.set_position(Vector3(5.0f, 5.0f, 0.0f));
     m_enemy_player.set_player_position(Vector3(5.0f, 0.0f, 5.0f));
     m_player.set_player_position(Vector3(0.0f, 0.0f, 0.0f));
@@ -31,6 +34,8 @@ void shooter::Game::run() {
     }
 
     unload_map(m_map);
+    unload_player(m_player);
+    unload_player(m_enemy_player);
     CloseWindow();
 }
 
